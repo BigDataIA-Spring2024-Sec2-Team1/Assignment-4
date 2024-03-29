@@ -1,9 +1,17 @@
 from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
-from typing import List
+from fastapi.middleware.cors import CORSMiddleware
 import boto3
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8501"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],
+    allow_headers=["*"],
+)
 
 AWS_ACCESS_KEY_ID = 'AKIATNRXE6JBYW4S4PQP'
 AWS_SECRET_ACCESS_KEY = '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'

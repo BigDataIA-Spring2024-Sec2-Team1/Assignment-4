@@ -8,10 +8,18 @@ services:
     volumes:
       - ./frontend:/app
   backend:
-    build: .
+    build: ./backend
     ports:
       - "8000:8000"
     volumes:
-      - ./:/app
+      - ./backend:/app
+  dags:
+    image: apache/airflow:slim-latest
+    volumes:
+      - ./airflow:/opt/airflow
+    ports:
+      - "8080:8080"
+    command: airflow standalone
+
 
   

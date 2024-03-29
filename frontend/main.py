@@ -12,7 +12,7 @@ if file:
     if st.button("Upload to S3"):
         # Send file to FastAPI endpoint
         files = {"files": (file.name, file.getvalue())}
-        response = requests.post("http://localhost:8000/upload", files=files, stream=True)
+        response = requests.post("http://backend:8000/upload", files=files, stream=True)
 
         # Get total file size
         total_size = int(response.headers.get('content-length', 0))
