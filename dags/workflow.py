@@ -6,7 +6,7 @@ from processor.grobid_parse import parsePDF
 from processor.init_setup import download_and_initial_setup
 
 with DAG(
-    dag_id='cfa_pipe',
+    dag_id='cfa_workflow',
     default_args={'start_date': days_ago(1),
     'execution_timeout': timedelta(minutes=30)},
     schedule_interval='0 23 * * *',
