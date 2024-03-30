@@ -127,10 +127,11 @@ def create_stage(engine):
 
 
 def upload_files(engine, input_path):
+    sf_input_path = f'file://{input_path}'
     with engine.connect() as connection:
         # Upload files to stage
         connection.execute(f"""USE DATABASE {DATABASE_NAME};""")
-        connection.execute(f"""PUT {input_path} @{STAGE_PATH};""")
+        connection.execute(f"""PUT {sf_input_path} @{STAGE_PATH};""")
     engine.dispose()
 
 
