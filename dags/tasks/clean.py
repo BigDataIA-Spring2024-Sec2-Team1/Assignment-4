@@ -28,8 +28,8 @@ def get_clean_csv(**kwargs):
         writePath = os.path.join(folder_path, f"Grobid_RR_{data[0]}_{data[1]}_combined.csv")
         # Write the clean rows to a new CSV file
         clean_df = pd.DataFrame(clean_rows)
-        clean_df.to_csv(writePath, index=False)
-        
+        clean_df.to_csv(writePath, index=True)
+        ti.xcom_push(key="output_file_path", value=writePath)
         print("Clean CSV file created successfully.")
         return True
     except FileNotFoundError:
