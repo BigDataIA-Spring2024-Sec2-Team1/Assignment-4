@@ -26,7 +26,7 @@ def parsePDF(**kwargs):
         res = []
         with open(writePath, "w") as file:
             for i in range(len(docs)):
-                res.append({"text": docs[i].metadata['text'], "section_title": docs[i].metadata['section_title'],"file_path": docs[i].metadata['file_path']})
+                res.append({"text": docs[i].metadata['text'], "section_title": docs[i].metadata['section_title'],"file_path": docs[i].metadata['file_path'], "para": docs[i].metadata['para'], "paper_title": docs[i].metadata['paper_title'], "year": data[0], "level": data[1]})
             json.dump(res, file)
     
         ti.xcom_push(key="TEMP_OUTPUT_TXT", value=writePath)
