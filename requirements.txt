@@ -7,13 +7,7 @@ requests
 snowflake-sqlalchemy
 SQLAlchemy
 pandas
-PyPDF2
-selenium
-webscraping
-scrapy-selenium
 validators
 pydantic 
 pytest
 elementpath
-streamlit
-matplotlib
