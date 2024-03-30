@@ -3,7 +3,7 @@ from pathlib import Path
 import boto3
 from dotenv import load_dotenv
 from urllib.parse import urlparse
-import uuid
+import base64
 
 # Load environment variables from .env file
 load_dotenv()
@@ -21,7 +21,7 @@ def download_s3(**kwargs):
     pdf_url = kwargs["dag_run"].conf["s3_uploaded_file"]
     print('Selected pdf:' + pdf_url)
     ti = kwargs['ti']
-    local_folder_name = str(uuid.uuid4())
+    local_folder_name = str(base64.b64encode(os.urandom(12), b'__').decode())
     local_folder_path = os.path.join("/tmp/webapp", local_folder_name)
     local_file_path = os.path.join(local_folder_path, os.path.basename(pdf_url))
     Path(local_folder_path).mkdir(parents=True, exist_ok=True)
