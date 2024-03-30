@@ -5,8 +5,9 @@ import os
 def get_clean_csv(**kwargs):
     try:
         ti = kwargs['ti']
-        input_path = ti.xcom_pull(key="TEMP_OUTPUT_TXT", task_ids="grobid_procesing")
-    
+        print("context", ti)
+        input_path = ti.xcom_pull(key="TEMP_OUTPUT_TXT", task_ids="grobid_processing")
+        print("reding file", input_path)
         # Read the CSV file
         df = pd.read_json(input_path)
         

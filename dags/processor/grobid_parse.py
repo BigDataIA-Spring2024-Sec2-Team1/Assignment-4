@@ -30,7 +30,6 @@ def parsePDF(**kwargs):
             json.dump(res, file)
     
         ti.xcom_push(key="TEMP_OUTPUT_TXT", value=writePath)
-
         print(f"Extracted text from '{file_path}' and saved to: {writePath}")
     except Exception as e:
         print("in exception", e)
