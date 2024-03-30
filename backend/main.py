@@ -8,7 +8,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8501"],
+    allow_origins=["http://frontend:8501"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
@@ -22,6 +22,7 @@ s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_a
 @app.post("/upload")
 async def upload_file(files: UploadFile = File(...)):
     try:
+        print("Uploading file to s3", files.filename)
         s3_client.upload_fileobj(files.file, S3_BUCKET_NAME, files.filename)
         print("file uploaded successfully")
         triggerAirFlowPipeline(f'https://{S3_BUCKET_NAME}.s3.amazonaws.com/{files.filename}')
@@ -34,8 +35,8 @@ def hello():
     return {"message": "Backend is running"}
 
 def triggerAirFlowPipeline(s3_url):
-    airflow_base_url = 'http://host.docker.internal:8095'
-    airflow_url = f"{airflow_base_url}/api/v1/dags/cfa_pipe/dagRuns"
+    airflow_base_url = 'http://host.docker.internal:8024'
+    airflow_url = f"{airflow_base_url}/api/v1/dags/cfa_workflow/dagRuns"
     headers = {
         "Content-Type": "application/json",
         "Cache-Control": "no-cache",
