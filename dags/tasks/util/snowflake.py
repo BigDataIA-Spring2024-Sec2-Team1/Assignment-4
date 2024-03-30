@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import warnings
 import os
+import pandas as pd
 
 # from snowflake.sqlalchemy import
 
@@ -147,15 +148,21 @@ def view_table(engine):
         print(existing_tables)
         if TABLE_NAME.upper()  in existing_tables:
             # Create table
-            result = connection.execute(
+            result_cursor = connection.execute(
                 f"""SELECT * FROM {TABLE_NAME}"""
             )
+            result = result_cursor.fetchall()
+            df_columns  = list(result[0])
+            df = pd.DataFrame(result[1:], columns=df_columns)
+            # Close cursor and connection
+            result_cursor.close()
             print("Data fetched successfully.")
-            return result
+            engine.dispose()
+            return df
         else:
+            engine.dispose()
             print("Table does not exists.")
             return None
-    engine.dispose()
 
 
 def push_data_to_snowflake(**kwargs):
@@ -176,3 +183,18 @@ def push_data_to_snowflake(**kwargs):
         # Log the error message
         print(f"Error while uploading data to Snowflake: {e}")
         return False
+
+
+def view_table_from_snowflake():
+    try:
+        engine = get_engine()
+        result = view_table(engine)
+        print("Done")
+        return result
+    except Exception as e:
+        # Log the error message
+        print(f"Error while view_table_from_snowflake data : {e}")
+        return False
+
+# result = view_table_from_snowflake()
+# print(result)
