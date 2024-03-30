@@ -1,0 +1,5 @@
+langchain-community
+lxml
+bs4
+boto3
+python-dotenv
