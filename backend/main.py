@@ -23,8 +23,8 @@ s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_a
 async def upload_file(files: UploadFile = File(...)):
     try:
         print("Uploading file to s3", files.filename)
-        s3_client.upload_fileobj(files.file, S3_BUCKET_NAME, files.filename)
-        print("file uploaded successfully")
+        file_uploaded = s3_client.upload_fileobj(files.file, S3_BUCKET_NAME, files.filename)
+        print("file uploaded successfully", file_uploaded)
         triggerAirFlowPipeline(f'https://{S3_BUCKET_NAME}.s3.amazonaws.com/{files.filename}')
     except Exception as e:
         return JSONResponse(status_code=500, content={"error": str(e)})

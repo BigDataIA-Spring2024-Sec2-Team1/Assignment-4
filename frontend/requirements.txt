@@ -1,0 +1,6 @@
+python-dotenv
+requests
+snowflake-sqlalchemy
+SQLAlchemy
+pandas
+streamlit

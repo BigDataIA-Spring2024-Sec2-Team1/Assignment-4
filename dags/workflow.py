@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 from datetime import timedelta
 from processor.grobid_parse import parsePDF
-from processor.init_setup import download_and_initial_setup
+from processor.init_setup import download_s3
 from tasks.clean import get_clean_csv
 from processor.upload_to_snowflake import push_data_to_snowflake
 with DAG(
@@ -16,7 +16,7 @@ with DAG(
     
     initial_setup_task = PythonOperator(
         task_id="init_setup",
-        python_callable=download_and_initial_setup,
+        python_callable=download_s3,
         dag=dag
     )
 

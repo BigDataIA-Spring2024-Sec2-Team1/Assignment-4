@@ -2,9 +2,13 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-RUN pip install streamlit
-
 COPY ./ /app/frontend/
+
+COPY requirements.txt /app/requirements.txt
+
+COPY .env /app/frontend/.env
+
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 EXPOSE 8501
 

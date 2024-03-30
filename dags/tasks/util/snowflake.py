@@ -5,9 +5,10 @@ import os
 # from snowflake.sqlalchemy import
 
 from sqlalchemy import create_engine
-
+from sqlalchemy.engine import URL
+from sqlalchemy.dialects import registry
 from dotenv import load_dotenv
-
+import re
 load_dotenv()
 
 warnings.filterwarnings("ignore")
@@ -25,8 +26,17 @@ STAGE_PATH = os.getenv("STAGE_PATH")
 
 
 def get_engine():
+    connection_url = URL.create(
+        "snowflake",
+        username=SF_USERNAME,
+        password=SF_PASSWORD,
+        host=SF_ACCOUNT_IDENTIFIER,
+    )
+
+    registry.register('snowflake', 'snowflake.sqlalchemy', 'dialect')
+    print("Connection url is", connection_url)
     engine = create_engine(
-        f"snowflake://{SF_USERNAME}:{SF_PASSWORD}@{SF_ACCOUNT_IDENTIFIER}/"
+        connection_url
     )
     return engine
 
@@ -124,7 +134,12 @@ def upload_files(engine, input_path):
     engine.dispose()
 
 
-def copy_stage_to_table(engine, file_name):
+def copy_stage_to_table(engine, file_path):
+    # Extracting file name using regular expression
+    file_name = re.search(r'/([^/]+)\.csv$', file_path).group(1)
+ 
+    # Creating the desired pattern
+    
     with engine.connect() as connection:
         # Copy stage to table
         connection.execute(f"""USE DATABASE {DATABASE_NAME}""")
@@ -133,11 +148,9 @@ def copy_stage_to_table(engine, file_name):
             f"""COPY INTO {TABLE_NAME}
           FROM @{STAGE_PATH}
           FILE_FORMAT = (type = csv field_optionally_enclosed_by='"')
-          PATTERN = '.*metadata.csv.gz'
+          PATTERN = '.*{file_name}.csv.gz'
           ON_ERROR = 'skip_file';"""
         )
-        print("hhhere")
-    engine.dispose()
 
 def view_table(engine):
     with engine.connect() as connection:
@@ -169,10 +182,11 @@ def push_data_to_snowflake(**kwargs):
         create_warehouse(engine)
         create_stage(engine)
         upload_files(engine, input_path)
-        copy_stage_to_table(engine, "metadata.csv")
+        copy_stage_to_table(engine, input_path)
         print("Done")
         return True
     except Exception as e:
         # Log the error message
         print(f"Error while uploading data to Snowflake: {e}")
+        print("Connection url is", engine)
         return False

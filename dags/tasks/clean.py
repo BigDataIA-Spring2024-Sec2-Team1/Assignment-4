@@ -1,5 +1,6 @@
 import pandas as pd
 from tasks.util.pydantic_models.pydantic_classes import MetaDataPDFClass
+from pydantic import ValidationError
 import os
 
 def get_clean_csv(**kwargs):
@@ -28,8 +29,8 @@ def get_clean_csv(**kwargs):
         folder_path = ti.xcom_pull(key="temp_folder_path", task_ids="init_setup")
         writePath = os.path.join(folder_path, f"Grobid_RR_{data[0]}_{data[1]}_combined.csv")
         # Write the clean rows to a new CSV file
-        clean_df = pd.DataFrame(clean_rows)
-        clean_df.to_csv(writePath, index=True)
+        clean_df = pd.DataFrame(clean_rows)[1:]
+        clean_df.to_csv(writePath, index=False)
         ti.xcom_push(key="output_file_path", value=writePath)
         print("Clean CSV file created successfully.")
         return True

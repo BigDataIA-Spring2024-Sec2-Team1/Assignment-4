@@ -83,9 +83,9 @@ class MetaDataPDFClass(BaseModel):
     text: constr(min_length=1)
     section_title: constr(min_length=1)
     file_path: Path
-    para:str
+    para:int
     paper_title :str
-    year :str
+    year :int
     level :str
 
     class Config:
