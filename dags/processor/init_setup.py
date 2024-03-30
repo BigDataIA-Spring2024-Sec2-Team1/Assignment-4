@@ -24,8 +24,8 @@ def _get_path_from_url(url):
     return parsed_url.path.lstrip('/')
 
 def download_and_initial_setup(**kwargs):
-    pdf_url = "https://bigdata-assignment-04.s3.amazonaws.com/2024-l1-topics-combined-2.pdf"
-    # pdf_url = kwargs["dag_run"].conf["uploaded_file"]
+    # pdf_url = "https://bigdata-assignment-04.s3.amazonaws.com/2024-l1-topics-combined-2.pdf"
+    pdf_url = kwargs["dag_run"].conf["s3_uploaded_file"]
     print('Selected pdf:' + pdf_url)
     ti = kwargs['ti']
     local_folder_name = _generate_random_string()
