@@ -4,7 +4,8 @@ from airflow.utils.dates import days_ago
 from datetime import timedelta
 from processor.grobid_parse import parsePDF
 from processor.init_setup import download_and_initial_setup
-
+from processor.data_validation import get_clean_csv
+from processor.upload_to_snowflake import push_data_to_snowflake
 with DAG(
     dag_id='cfa_workflow',
     default_args={'start_date': days_ago(1),
@@ -24,5 +25,17 @@ with DAG(
         python_callable=parsePDF,
         dag=dag
     )
+    
+    data_validation = PythonOperator(
+        task_id="data_validation",
+        python_callable=get_clean_csv,
+        dag=dag
+    )
+     
+    upload_to_snowflake = PythonOperator(
+        task_id="upload_to_snowflake",
+        python_callable=push_data_to_snowflake,
+        dag=dag
+    )
 
-    initial_setup_task >> trigger_grobid
+    initial_setup_task >> trigger_grobid >> data_validation >> upload_to_snowflake
