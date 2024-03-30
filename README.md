@@ -12,12 +12,9 @@
 
 `Step 2` -> `docker-compose up`
 
-
-## DBT Code is in Below Branch
-https://github.com/BigDataIA-Spring2024-Sec2-Team1/Assignment-3/tree/Aniketgiram-patch-1
     
 ## Links
-Codelab: https://codelabs-preview.appspot.com/?file_id=1bOLtJd9YLoInM7W4p1JACNyj-XZh1Pkn0eEy6gx4R6U/edit?usp=sharing#0
+Codelab: https://codelabs-preview.appspot.com/?file_id=1qQ6Sh4l0Irm5vCFGsIiOCBFDV7tqvVudfKLBHL1N22Q/edit?usp=sharing#0
 
 
 ## Project Structure TO BE UPDATED
