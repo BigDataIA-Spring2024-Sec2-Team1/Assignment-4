@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import boto3
 import requests
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
 app = FastAPI()
 
@@ -14,9 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-AWS_ACCESS_KEY_ID = 'AKIATNRXE6JBYW4S4PQP'
-AWS_SECRET_ACCESS_KEY = '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'
-S3_BUCKET_NAME = 'bigdata-assignment-04'
+AWS_ACCESS_KEY_ID =  os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY =  os.getenv("AWS_SECRET_ACCESS_KEY")
+S3_BUCKET_NAME =  os.getenv("S3_BUCKET_NAME")
 s3_client = boto3.client('s3', aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
 
 @app.post("/upload")
