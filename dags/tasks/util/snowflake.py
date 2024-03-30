@@ -59,7 +59,11 @@ def create_table(engine):
                 f"""CREATE OR REPLACE TABLE {TABLE_NAME} (
                 text STRING,
                 section_title STRING,
-                file_path STRING
+                file_path STRING,
+                para STRING,
+                paper_title STRING,
+                year STRING,
+                level STRING
                 )"""
             )
             print("Table created successfully.")
@@ -112,11 +116,11 @@ def create_stage(engine):
     engine.dispose()
 
 
-def upload_files(engine, local_file_path):
+def upload_files(engine, input_path):
     with engine.connect() as connection:
         # Upload files to stage
         connection.execute(f"""USE DATABASE {DATABASE_NAME};""")
-        connection.execute(f"""PUT {local_file_path} @{STAGE_PATH};""")
+        connection.execute(f"""PUT {input_path} @{STAGE_PATH};""")
     engine.dispose()
 
 
@@ -135,16 +139,36 @@ def copy_stage_to_table(engine, file_name):
         print("hhhere")
     engine.dispose()
 
+def view_table(engine):
+    with engine.connect() as connection:
+        connection.execute(f"""USE DATABASE {DATABASE_NAME};""")
+        result = connection.execute(f"""SHOW TABLES LIKE '{TABLE_NAME}'""")
+        existing_tables = [row[1] for row in result.fetchall()]
+        print(existing_tables)
+        if TABLE_NAME.upper()  in existing_tables:
+            # Create table
+            result = connection.execute(
+                f"""SELECT * FROM {TABLE_NAME}"""
+            )
+            print("Data fetched successfully.")
+            return result
+        else:
+            print("Table does not exists.")
+            return None
+    engine.dispose()
 
-def push_data_to_snowflake():
+
+def push_data_to_snowflake(**kwargs):
     try:
-        local_file_path = f'file:///opt/metadata.csv'
+        ti = kwargs['ti']
+        input_path = ti.xcom_pull(key="output_file_path", task_ids="data_validation")
+        # input_path = f'file:///opt/metadata.csv'
         engine = get_engine()
         create_database(engine)
         create_table(engine)
         create_warehouse(engine)
         create_stage(engine)
-        upload_files(engine, local_file_path)
+        upload_files(engine, input_path)
         copy_stage_to_table(engine, "metadata.csv")
         print("Done")
         return True
@@ -152,4 +176,3 @@ def push_data_to_snowflake():
         # Log the error message
         print(f"Error while uploading data to Snowflake: {e}")
         return False
-push_data_to_snowflake()

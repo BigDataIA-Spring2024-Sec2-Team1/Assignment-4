@@ -83,8 +83,10 @@ class MetaDataPDFClass(BaseModel):
     text: constr(min_length=1)
     section_title: constr(min_length=1)
     file_path: Path
-    # para:str
-    # pages:str
+    para:str
+    paper_title :str
+    year :str
+    level :str
 
     class Config:
         # To ignore extra fields in the CSV
